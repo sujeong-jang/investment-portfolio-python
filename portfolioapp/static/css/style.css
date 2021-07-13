@@ -1,0 +1,31 @@
+.checkboxlabel{
+  display:flex;
+  justify-content: space-between;
+  text-align:justify;
+}
+.message{
+  display:flex;
+  justify-content:space-between;
+}
+textarea{
+  width:82%;
+}
+.radiobuttons{
+  display:flex;
+}
+.survey{
+  font-family: 'Raleway', sans-serif;
+  margin-top:25px;
+}
+h1{
+  font-weight:400;
+  font-family: 'Merriweather', serif
+}
+#description{
+  font-family: 'Merriweather', serif
+}
+@media(max-width:500px){
+  .checkboxlabel{
+  display:block;
+}
+}
