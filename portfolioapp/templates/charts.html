@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>포트폴리오 결과</title>
+    <title>Portal - Bootstrap 5 Admin Dashboard Template For Developers</title>
 
     <!-- Meta -->
     <meta charset="utf-8">
@@ -17,9 +17,9 @@
 
 
 <body class="app">
-<div class="app-content pt-3 p-md-3 p-lg-4" style="font-family: 'Nanum Gothic', sans-serif;">
+<div class="app-content pt-3 p-md-3 p-lg-4">
     <div class="container-xl">
-        <h1 class="app-page-title text-center"><strong>{{KEY_INVEST_TYPE}} 포트폴리오 결과</strong></h1>
+        <h1 class="app-page-title">포트폴리오 결과</h1>
         <div class="row g-4 mb-4">
             <div class="col-12 col-lg-6">
                 <div class="app-card app-card-chart h-100 shadow-sm">
@@ -64,28 +64,34 @@
                     </div><!--//app-card-header-->
                     <div class="app-card-body p-4">
                         <div class="chart-container">
-                            <table class="table table-hover">
+                            <table class="table">
                                 <thead>
                                 <tr>
-                                    <th scope="col">상품명</th>
-                                    <th scope="col">위험등급</th>
-                                    <th scope="col">투자 비중</th>
-                                    <th scope="col">1년 수익률</th>
-                                    <th scope="col">3년 수익률</th>
-                                    <th scope="col">5년 수익률</th>
+                                    <th scope="col">#</th>
+                                    <th scope="col">First</th>
+                                    <th scope="col">Last</th>
+                                    <th scope="col">Handle</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {% for i in range(5) %}
                                 <tr>
-                                    <th>{{KEY_NAME_LIST[i]}}</th>
-                                    <td>{{KEY_RISK_LIST[i]}}</td>
-                                    <td>{{KEY_WEIGHT_LIST[i]}}%</td>
-                                    <td>{{KEY_RETURN_1Y[i]}}%</td>
-                                    <td>{{KEY_RETURN_3Y[i]}}%</td>
-                                    <td>{{KEY_RETURN_5Y[i]}}%</td>
+                                    <th scope="row">1</th>
+                                    <td>Mark</td>
+                                    <td>Otto</td>
+                                    <td>@mdo</td>
                                 </tr>
-                                {% endfor %}
+                                <tr>
+                                    <th scope="row">2</th>
+                                    <td>Jacob</td>
+                                    <td>Thornton</td>
+                                    <td>@fat</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">3</th>
+                                    <td>Larry</td>
+                                    <td>the Bird</td>
+                                    <td>@twitter</td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -139,39 +145,28 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Nanum+Gothic&family=Roboto:wght@900&display=swap" rel="stylesheet">
-
 <script>
-    var count = {{KEY_COUNT_LIST}}
-    var chartColors = {
-	red: 'rgb(255, 99, 132)',
-	orange: 'rgb(255, 159, 64)',
-	yellow: 'rgb(255, 205, 86)',
-	green: 'rgb(75, 192, 192)',
-	blue: 'rgb(54, 162, 235)',
-	purple: 'rgb(153, 102, 255)',
-	grey: 'rgb(201, 203, 207)'
-    };
-
     var ctx = document.getElementById('chart-pie').getContext('2d');
     var myPieChart = new Chart(ctx, {
 	    type: 'pie',
 	data: {
 		datasets: [{
-			data: count,
+			data: [
+				randomDataPoint(),
+				randomDataPoint(),
+				randomDataPoint(),
+			],
 			backgroundColor: [
-				window.chartColors.red,
-				window.chartColors.orange,
-				window.chartColors.yellow,
+				window.chartColors.green,
+				window.chartColors.blue,
+				window.chartColors.gray,
 			],
 			label: 'Dataset 1'
 		}],
 		labels: [
-			'위험',
-			'중립',
-			'안전',
+			'Green',
+			'Blue',
+			'Gray',
 		]
 	},
 	options: {
@@ -182,6 +177,7 @@
 			align: 'center',
 		},
 		maintainAspectRatio: false,
+
 		tooltips: {
 			titleMarginBottom: 10,
 			bodySpacing: 10,
@@ -211,46 +207,44 @@
 			    },
             },
 		},
-	  }
+	}
 	});
+
+
+
+
 </script>
 
 <script>
-    var weights = {{KEY_WEIGHT_LIST}}
-    var names = {{KEY_NAME_LIST|tojson}}
-
-    var chartColors = {
-	red: 'rgb(255, 99, 132)',
-	orange: 'rgb(255, 159, 64)',
-	yellow: 'rgb(255, 205, 86)',
-	green: 'rgb(75, 192, 192)',
-	blue: 'rgb(54, 162, 235)',
-	purple: 'rgb(153, 102, 255)',
-	grey: 'rgb(201, 203, 207)'
-    };
-
     var ctx = document.getElementById('chart-doughnut').getContext('2d');
     var myDoughnutChart = new Chart(ctx, {
 	    type: 'doughnut',
 	data: {
 		datasets: [{
-			data: weights,
+			data: [
+				randomDataPoint(),
+				randomDataPoint(),
+				randomDataPoint(),
+			],
 			backgroundColor: [
 				window.chartColors.green,
 				window.chartColors.blue,
-				window.chartColors.orange,
-				window.chartColors.yellow,
-				window.chartColors.purple,
+				window.chartColors.gray,
+
 			],
 			label: 'Dataset 1'
 		}],
-		labels: names
+		labels: [
+			'Green',
+			'Blue',
+			'Gray',
+		]
 	},
 	options: {
 		responsive: true,
 		legend: {
 			display: true,
-			position: 'right',
+			position: 'bottom',
 			align: 'center',
 		},
         maintainAspectRatio: false,
@@ -287,9 +281,15 @@
 					return percentage + "%";
 			    },
             },
+
+
 		},
 	}
 	});
+
+
+
+
 </script>
 </body>
 </html>

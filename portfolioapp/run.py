@@ -15,9 +15,12 @@ def index():
     return render_template('index.html')
 
 @app.route("/survey", methods=['POST', 'GET'])
-def get_survey():
+def survey():
+    if request.method == 'GET':
+        return render_template('survey.html')
+
     if request.method == 'POST':
-        # 국내 ETF / 국내/외 ETF is_oversea = request.form['oversea']
+        is_oversea = request.form['oversea']
 
         gender = request.form['gender']
         age = request.form['age']
@@ -52,11 +55,62 @@ def get_survey():
         else:
             invest_type = "위험중립형"
 
-    return render_template('result.html', KEY_INVEST_TYPE=invest_type)
+    return render_template('result.html', KEY_INVEST_TYPE=invest_type, IS_OVERSEA=is_oversea)
 
-@app.route("/portfolio")
+@app.route("/portfolio", methods=['POST', 'GET'])
 def portfolio():
-    return render_template('portfolio.html')
+    if request.method == 'POST':
+        money = request.form['money']
+        type = request.form['type']
+        risk_no = request.form['risk_no']
+        is_oversea = request.form['oversea']
+
+        db = ""
+
+
+        if is_oversea == '0': # 해외 ETF
+            db = "ETF_US"
+        else: # 국내 ETF
+            db = "ETF_KR"
+
+        print(db)
+
+        with oracle_engine.connect() as conn:
+            try:
+                sql = "select * from " +  db + " where invest_type=:1"
+                results = conn.execute(sql, (type)).fetchall()
+
+                name_list = [] # 상품명
+                risk_list = [] # 위험등급
+                weight_list = [] # 가중치
+                returns_1y = [] # 1년 수익률
+                returns_3y = [] # 3년 수익률
+                returns_5y = [] # 5년 수익률
+
+                for etf in results:
+                    name_list.append(etf[0])
+                    risk_list.append(etf[2])
+                    weight_list.append(etf[3])
+                    returns_1y.append(etf[4])
+                    returns_3y.append(etf[5])
+                    returns_5y.append(etf[6])
+
+            except Exception as e:
+                print(e)
+                return render_template('error.html')
+
+        # 투자 등급 카운팅 (파이차트에 비중 나타내기 위해 사용)
+        count_list = [0,0,0]
+
+        for risk_type in risk_list:
+            if risk_type == '위험':
+                count_list[0] += 1
+            elif risk_type == '중립':
+                count_list[1] += 1
+            else:
+                count_list[2] += 1
+
+        return render_template('portfolio.html', KEY_INVEST_TYPE=type, KEY_NAME_LIST=name_list, KEY_RISK_LIST=risk_list, KEY_WEIGHT_LIST=weight_list, KEY_COUNT_LIST=count_list, KEY_RETURN_1Y=returns_1y, KEY_RETURN_3Y=returns_3y, KEY_RETURN_5Y=returns_5y)
 
 if __name__ == '__main__':
     app.run(debug=True)
