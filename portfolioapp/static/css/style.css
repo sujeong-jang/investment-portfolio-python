@@ -13,6 +13,11 @@ textarea{
 .radiobuttons{
   display:flex;
 }
+
+td {
+    align: center;
+}
+
 .survey{
   font-family: 'Raleway', sans-serif;
   margin-top:25px;

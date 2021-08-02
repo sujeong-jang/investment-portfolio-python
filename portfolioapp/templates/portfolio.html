@@ -15,11 +15,10 @@
     <link id="theme-style" rel="stylesheet" href="/static/css/portal.css">
 </head>
 
-
 <body class="app">
 <div class="app-content pt-3 p-md-3 p-lg-4" style="font-family: 'Nanum Gothic', sans-serif;">
     <div class="container-xl">
-        <h1 class="app-page-title text-center"><strong>{{KEY_INVEST_TYPE}} 포트폴리오 결과</strong></h1>
+        <h1 class="app-page-title text-center"><strong>{{KEY_INVEST_TYPE}} 포트폴리오</strong></h1>
         <div class="row g-4 mb-4">
             <div class="col-12 col-lg-6">
                 <div class="app-card app-card-chart h-100 shadow-sm">
@@ -47,12 +46,19 @@
             </div><!--//col-->
             <div class="col-lg-12">
                 <div class="app-card app-card-chart h-100 shadow-sm">
-                    <div class="app-card-header p-3 border-0">
-                        <h4 class="app-card-title">예상 수익률</h4>
+                    <div id="return_div" class="app-card-header p-3 border-0">
+                        <h4 class="app-card-title">과거 수익률</h4>
                     </div><!--//app-card-header-->
                     <div class="app-card-body p-4">
-                        <div class="chart-container">
-                            <canvas id="chart-line" height="80"></canvas>
+                        <div class="chart-container" >
+                            <canvas id="return_chart" height="100"></canvas>
+                        </div>
+                        <div class="flex-container pt-4" style="text-align:center">
+                            <button id="etf1" class="btn app-btn-secondary">{{KEY_ETF_LIST[0]}}</button>
+                            <button id="etf2" class="btn app-btn-secondary">{{KEY_ETF_LIST[1]}}</button>
+                            <button id="etf3" class="btn app-btn-secondary">{{KEY_ETF_LIST[2]}}</button>
+                            <button id="etf4" class="btn app-btn-secondary">{{KEY_ETF_LIST[3]}}</button>
+                            <button id="etf5" class="btn app-btn-secondary">{{KEY_ETF_LIST[4]}}</button>
                         </div>
                     </div><!--//app-card-body-->
                 </div><!--//app-card-->
@@ -60,32 +66,53 @@
             <div class="col-lg-12">
                 <div class="app-card app-card-chart h-100 shadow-sm">
                     <div class="app-card-header p-3 border-0">
-                        <h4 class="app-card-title">포트폴리오 구성 상품</h4>
+                        <h4 class="app-card-title">포트폴리오 구성 상품 및 금액</h4>
+                        <script>
+                            var money_rate = {{KEY_MONEY}} * {{KEY_WEIGHT_LIST[0]}} * 0.01
+                            document.write("<div>")
+                            document.write(money_rate)
+                            document.write("</div>")
+                        </script>
                     </div><!--//app-card-header-->
                     <div class="app-card-body p-4">
                         <div class="chart-container">
                             <table class="table table-hover">
-                                <thead>
+                                <thead class="text-center">
                                 <tr>
                                     <th scope="col">상품명</th>
                                     <th scope="col">위험등급</th>
                                     <th scope="col">투자 비중</th>
+                                    <th scope="col">투자금액</th>
                                     <th scope="col">1년 수익률</th>
                                     <th scope="col">3년 수익률</th>
                                     <th scope="col">5년 수익률</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {% for i in range(5) %}
-                                <tr>
-                                    <th>{{KEY_NAME_LIST[i]}}</th>
-                                    <td>{{KEY_RISK_LIST[i]}}</td>
-                                    <td>{{KEY_WEIGHT_LIST[i]}}%</td>
-                                    <td>{{KEY_RETURN_1Y[i]}}%</td>
-                                    <td>{{KEY_RETURN_3Y[i]}}%</td>
-                                    <td>{{KEY_RETURN_5Y[i]}}%</td>
-                                </tr>
-                                {% endfor %}
+                                    <script>
+                                        var name_list = {{KEY_NAME_LIST|tojson}}
+                                        var risk_list = {{KEY_RISK_LIST|tojson}}
+                                        var weight_list = {{KEY_WEIGHT_LIST}}
+                                        var return_1y = {{KEY_RETURN_1Y|tojson}}
+                                        var return_3y = {{KEY_RETURN_3Y|tojson}}
+                                        var return_5y = {{KEY_RETURN_5Y|tojson}}
+
+                                        for(i=0; i<5; i++){
+                                            var price = {{KEY_PRICE}} * weight_list[i] * 0.01
+
+                                            document.write("<tr><th>" + name_list[i] +"</th>")
+                                            document.write("<td align='center'>"+ risk_list[i] +"</td>")
+                                            document.write("<td align='center'>"+ weight_list[i] +"%</td>")
+                                            document.write("<td align='center'>"+ price.toFixed(0) +"만원</td>")
+                                            document.write("<td align='center'>"+ return_1y[i] +"</td>")
+                                            document.write("<td align='center'>"+ return_3y[i] +"</td>")
+                                            if(return_5y[i] === '-'){
+                                                document.write("<td align='center'> - </td>")
+                                            }else{
+                                                document.write("<td align='center'>"+ return_5y[i] +"</td></tr>")
+                                            }
+                                        }
+                                    </script>
                                 </tbody>
                             </table>
                         </div>
@@ -96,11 +123,11 @@
             <div class="col-lg-12">
                 <div class="app-card app-card-chart h-100 shadow-sm">
                     <div class="app-card-header p-3 border-0">
-                        <h4 class="app-card-title">상품별 과거 수익률</h4>
+                        <h4 class="app-card-title">포트폴리오 백테스팅</h4>
                     </div><!--//app-card-header-->
                     <div class="app-card-body p-4">
-                        <div class="chart-container">
-                            <canvas id="chart-line" height="80"></canvas>
+                        <div class="chart-container" >
+                            <canvas id="backtesting_chart" height="100"></canvas>
                         </div>
                     </div><!--//app-card-body-->
                 </div><!--//app-card-->
@@ -109,17 +136,8 @@
     </div><!--//container-fluid-->
 </div><!--//app-content-->
 
-<footer class="app-footer">
-    <div class="container text-center py-3">
-        <!--/* This template is free as long as you keep the footer attribution link. If you'd like to use the template without the attribution link, you can buy the commercial license via our website: themes.3rdwavemedia.com Thank you for your support. :) */-->
-        <small class="copyright">Designed with <i class="fas fa-heart" style="color: #fb866a;"></i> by <a
-                class="app-link" href="http://themes.3rdwavemedia.com" target="_blank">Xiaoying Riley</a> for
-            developers
-        </small>
-    </div>
-</footer><!--//app-footer-->
 </div><!--//app-wrapper-->
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.2/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.bundle.min.js"></script>
@@ -143,6 +161,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Nanum+Gothic&family=Roboto:wght@900&display=swap" rel="stylesheet">
 
+<!-- pie chart -->
 <script>
     var count = {{KEY_COUNT_LIST}}
     var chartColors = {
@@ -182,6 +201,7 @@
 			align: 'center',
 		},
 		maintainAspectRatio: false,
+		
 		tooltips: {
 			titleMarginBottom: 10,
 			bodySpacing: 10,
@@ -290,6 +310,349 @@
 		},
 	}
 	});
+</script>
+
+<!-- Return Chart -->
+<script>
+    window.chartColors = {
+        green: '#75c181',
+        blue: '#5b99ea',
+        gray: '#a9b5c9',
+        text: '#252930',
+        border: '#e7e9ed'
+    };
+
+    var etf1 = {% autoescape off %} "{{KEY_ETF_LIST[0]}}" {% endautoescape %};
+    var etf2 = {% autoescape off %} "{{KEY_ETF_LIST[1]}}" {% endautoescape %};
+    var etf3 = {% autoescape off %} "{{KEY_ETF_LIST[2]}}" {% endautoescape %};
+    var etf4 = {% autoescape off %} "{{KEY_ETF_LIST[3]}}" {% endautoescape %};
+    var etf5 = {% autoescape off %} "{{KEY_ETF_LIST[4]}}" {% endautoescape %};
+
+    var return1 = {{KEY_RETURN_LIST[0]}};
+    var return2 = {{KEY_RETURN_LIST[1]}};
+    var return3 = {{KEY_RETURN_LIST[2]}};
+    var return4 = {{KEY_RETURN_LIST[3]}};
+    var return5 = {{KEY_RETURN_LIST[4]}};
+
+    var date_list1 = {% autoescape off %} {{KEY_DATE_LIST[0]}} {% endautoescape %};
+    var date_list2 = {% autoescape off %} {{KEY_DATE_LIST[1]}} {% endautoescape %};
+    var date_list3 = {% autoescape off %} {{KEY_DATE_LIST[2]}} {% endautoescape %};
+    var date_list4 = {% autoescape off %} {{KEY_DATE_LIST[3]}} {% endautoescape %};
+    var date_list5 = {% autoescape off %} {{KEY_DATE_LIST[4]}} {% endautoescape %};
+
+    var etf1_return = {
+        labels: date_list1,
+        datasets: [{
+            label: etf1,
+            data: return1,
+
+            backgroundColor: "rgba(117,193,129,0.2)",
+			borderColor: "rgba(117,193,129, 0.8)",
+        }]
+    };
+    var etf2_return = {
+        labels: date_list2,
+        datasets: [{
+            label: etf2,
+            data: return2,
+
+            backgroundColor: "rgba(117,193,129,0.2)",
+			borderColor: "rgba(117,193,129, 0.8)",
+        }]
+    };
+    var etf3_return = {
+        labels: date_list3,
+        datasets: [{
+            label: etf3,
+            data: return3,
+
+            backgroundColor: "rgba(117,193,129,0.2)",
+			borderColor: "rgba(117,193,129, 0.8)",
+        }]
+    };
+    var etf4_return = {
+        labels: date_list4,
+        datasets: [{
+            label: etf4,
+            data: return4,
+
+            backgroundColor: "rgba(117,193,129,0.2)",
+			borderColor: "rgba(117,193,129, 0.8)",
+        }]
+    };
+    var etf5_return = {
+        labels: date_list5,
+        datasets: [{
+            label: etf5,
+            data: return5,
+
+            backgroundColor: "rgba(117,193,129,0.2)",
+			borderColor: "rgba(117,193,129, 0.8)",
+        }]
+    };
+
+    var options = {
+        responsive: true,
+
+        legend: {
+            display: true,
+            position: 'bottom',
+            align: 'end',
+        },
+
+        tooltips: {
+            mode: 'index',
+            intersect: false,
+            titleMarginBottom: 10,
+            bodySpacing: 10,
+            xPadding: 16,
+            yPadding: 16,
+            borderColor: window.chartColors.border,
+            borderWidth: 1,
+            backgroundColor: '#fff',
+            bodyFontColor: window.chartColors.text,
+            titleFontColor: window.chartColors.text,
+            callbacks: {
+                label: function(tooltipItem, data) {
+                    return tooltipItem.value + '%';
+                }
+            },
+        },
+        hover: {
+            mode: 'nearest',
+            intersect: true
+        },
+        scales: {
+            xAxes: [{
+                display: true,
+                gridLines: {
+                    drawBorder: false,
+                    color: window.chartColors.border,
+                },
+                scaleLabel: {
+                    display: false,
+
+                }
+            }],
+            yAxes: [{
+                display: true,
+                gridLines: {
+                    drawBorder: false,
+                    color: window.chartColors.border,
+                },
+                scaleLabel: {
+                    display: false,
+                },
+                ticks: {
+                    beginAtZero: true,
+                    userCallback: function(value, index, values) {
+                        return value.toLocaleString() + '%';
+                    }
+                },
+            }]
+        }
+    };
+
+    var ctx = document.getElementById('return_chart').getContext('2d');
+    var return_chart = new Chart(ctx, {
+        type: 'line',
+        data: etf1_return,
+        options: options
+	});
+
+    var scrollPosition = $("#return_div").offset().top;
+	$("#etf1").on("click", function() {
+	    if (return_chart) {
+            return_chart.destroy();
+        }
+        ctx = document.getElementById("return_chart").getContext('2d');
+        return_chart = new Chart(ctx, {
+            type: 'line',
+            data: etf1_return,
+            options: options
+        });
+        window.scrollTo({top:scrollPosition, behavior:'auto'});
+    });
+    $("#etf2").on("click", function() {
+        if (return_chart) {
+            return_chart.destroy();
+        }
+        ctx = document.getElementById("return_chart").getContext('2d');
+        return_chart = new Chart(ctx, {
+            type: 'line',
+            data: etf2_return,
+            options: options
+        });
+        window.scrollTo({top:scrollPosition, behavior:'auto'});
+    });
+    $("#etf3").on("click", function() {
+        if (return_chart) {
+            return_chart.destroy();
+        }
+        ctx = document.getElementById("return_chart").getContext('2d');
+        return_chart = new Chart(ctx, {
+            type: 'line',
+            data: etf3_return,
+            options: options
+        });
+        window.scrollTo({top:scrollPosition, behavior:'auto'});
+    });
+    $("#etf4").on("click", function() {
+        if (return_chart) {
+            return_chart.destroy();
+        }
+        ctx = document.getElementById("return_chart").getContext('2d');
+        return_chart = new Chart(ctx, {
+            type: 'line',
+            data: etf4_return,
+            options: options
+        });
+        window.scrollTo({top:scrollPosition, behavior:'auto'});
+    });
+    $("#etf5").on("click", function() {
+        if (return_chart) {
+            return_chart.destroy();
+        }
+        ctx = document.getElementById("return_chart").getContext('2d');
+        return_chart = new Chart(ctx, {
+            type: 'line',
+            data: etf5_return,
+            options: options
+        });
+        window.scrollTo({top:scrollPosition, behavior:'auto'});
+    });
+</script>
+
+<!-- Backtesting Chart -->
+<script>
+    const data = {% autoescape off %} {{KEY_BACKTESTING}} {% endautoescape %};
+
+    const totalDuration = 10000;
+    const delayBetweenPoints = totalDuration / data.length;
+    const previousY = (ctx) => ctx.index === 0 ? ctx.chart.scales.y.getPixelForValue(100) : ctx.chart.getDatasetMeta(ctx.datasetIndex).data[ctx.index - 1].getProps(['y'], true).y;
+    const animation = {
+      x: {
+        type: 'number',
+        easing: 'linear',
+        duration: delayBetweenPoints,
+        from: NaN, // the point is initially skipped
+        delay(ctx) {
+          if (ctx.type !== 'data' || ctx.xStarted) {
+            return 0;
+          }
+          ctx.xStarted = true;
+          return ctx.index * delayBetweenPoints;
+        }
+      },
+      y: {
+        type: 'number',
+        easing: 'linear',
+        duration: delayBetweenPoints,
+        from: previousY,
+        delay(ctx) {
+          if (ctx.type !== 'data' || ctx.yStarted) {
+            return 0;
+          }
+          ctx.yStarted = true;
+          return ctx.index * delayBetweenPoints;
+        }
+      }
+    };
+
+    var ctx = document.getElementById('backtesting_chart').getContext('2d');
+    var backtesting_chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            datasets: [{
+              borderColor: window.chartColors.blue,
+              borderWidth: 1,
+              radius: 0,
+              data: data,
+            }]
+        },
+        options: {
+            animation,
+            interaction: {
+              intersect: false
+            },
+            plugins: {
+              legend: false
+            },
+            scales: {
+              x: {
+                type: 'linear'
+              }
+            }
+        }
+	});
+</script>
+
+<!-- Pie Chart -->
+<script>
+    var ctx = document.getElementById('chart-pie').getContext('2d');
+    var myPieChart = new Chart(ctx, {
+	    type: 'pie',
+	data: {
+		datasets: [{
+			data: [
+				randomDataPoint(),
+				randomDataPoint(),
+				randomDataPoint(),
+			],
+			backgroundColor: [
+				window.chartColors.green,
+				window.chartColors.blue,
+				window.chartColors.gray,
+			],
+			label: 'Dataset 1'
+		}],
+		labels: [
+			'Green',
+			'Blue',
+			'Gray',
+		]
+	},
+	options: {
+		responsive: true,
+		legend: {
+			display: true,
+			position: 'bottom',
+			align: 'center',
+		},
+		maintainAspectRatio: false,
+
+		tooltips: {
+			titleMarginBottom: 10,
+			bodySpacing: 10,
+			xPadding: 16,
+			yPadding: 16,
+			borderColor: window.chartColors.border,
+			borderWidth: 1,
+			backgroundColor: '#fff',
+			bodyFontColor: window.chartColors.text,
+			titleFontColor: window.chartColors.text,
+
+			/* Display % in tooltip - https://stackoverflow.com/questions/37257034/chart-js-2-0-doughnut-tooltip-percentages */
+			callbacks: {
+                label: function(tooltipItem, data) {
+					//get the concerned dataset
+					var dataset = data.datasets[tooltipItem.datasetIndex];
+					//calculate the total of this data set
+					var total = dataset.data.reduce(function(previousValue, currentValue, currentIndex, array) {
+					return previousValue + currentValue;
+					});
+					//get the current items value
+					var currentValue = dataset.data[tooltipItem.index];
+					//calculate the precentage based on the total and current item, also this does a rough rounding to give a whole number
+					var percentage = Math.floor(((currentValue/total) * 100)+0.5);
+
+					return percentage + "%";
+			    },
+            },
+		},
+	}
+	});
+
 </script>
 </body>
 </html>
